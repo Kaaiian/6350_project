@@ -108,7 +108,7 @@ def get_MP_formula_property(property_of_interest='Band Gap'):
     mp_df = pd.DataFrame(mp_df_dict).transpose()
     mp_df.dropna(inplace=True)
     
-    mp_df[property_of_interest] = mp_df[property_of_interest].astype(float)
+    mp_df['target'] = mp_df[property_of_interest].astype(float)
     # chose to drop duplicates or take the mean value of the duplicates
     # get mean value for duplicates here
     mp_df = mp_df.groupby('formula').mean().reset_index()

@@ -42,7 +42,8 @@ if __name__ == "__main__":
     features = feature_matrix_df.get_df_features()
     targets = feature_matrix_df.get_df_targets()
 
-    for property in propery_list:
+
+    for property in propery_list[0:1]:
 
         # Get the dataframe of calculated values corresponding to the specified target
         df_calc_prop = get_MP_formula_property()
@@ -59,5 +60,6 @@ if __name__ == "__main__":
         # Append this new property vector the end of df
         new_column = 'Predicted ' + property
         features[new_column] = newProperty
-
     
+    df_updated = features
+    df_updated['target'] = targets
