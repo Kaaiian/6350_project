@@ -28,3 +28,4 @@ if __name__ == "__main__":
     print(feature_matrix.get_df_targets())
 
     y_test_list_nest, predicted_test_list_nest = crossValidate(feature_matrix.get_df_features(), feature_matrix.get_df_targets())
+    plot_mlOutput(y_test_list_nest, predicted_test_list_nest)

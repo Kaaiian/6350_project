@@ -5,9 +5,12 @@ from sklearn.metrics import r2_score, mean_squared_error
 from scipy.stats import spearmanr, pearsonr
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 def crossValidate(df_features, df_targets):
-    kf = KFold(n_splits=2, random_state=15, shuffle=True)
+    N = 2
+    kf = KFold(n_splits=N, random_state=15, shuffle=True)
     actual_data = []
     predicted_data = []
     y_test_list_nest = []
@@ -93,4 +96,39 @@ def crossValidate(df_features, df_targets):
         actual_data += list(y_test)
         predicted_data += list(predicted_test)
 
+
+    print("-----------------------------")
+    avg_test_rmse = sum_test_rmse / N
+    avg_test_score = sum_test_score / N
+    avg_spearman = sum_spearman / N
+    avg_pearson = sum_pearson / N
+
+    print(f'Mean-squared-error for the test data is: {avg_test_rmse:.3}')
+    print(f'Test data R-2 score: {avg_test_score:>6.7}')
+    print(f'Test data Spearman correlation: {avg_spearman:.3}')
+    print(f'Test data Pearson correlation: {avg_pearson:.3}')
     return(y_test_list_nest, predicted_test_list_nest)
+
+def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
+    plt.figure(1, figsize=(8, 8))
+    font = {'family': 'DejaVu Sans',
+            'weight': 'normal',
+            'size': 18}
+    plt.rc('font', **font)
+
+    for y_test, predicted_test in zip(y_test_list_nest, predicted_test_list_nest):
+        #    print(X_train, X_test, y_train, y_test)
+        plt.plot(y_test, predicted_test, 'ro', markerfacecolor='none')
+        plt.plot([0, 1000], [0, 1000], 'k-')
+
+    max_value = 40
+    plt.xlabel('Actual Bulk Modulus (GPa)', fontsize=22)
+    plt.ylabel('Predicted Bulk Modulus (GPa)', fontsize=22)
+    plt.xlim((0, max_value))
+    plt.ylim((0, max_value))
+    ticks = np.linspace(0, 20, 5)
+    plt.xticks(ticks)
+    plt.yticks(ticks)
+    plt.legend(['Density (MPDB)', 'Ideal Performance'], loc='best')
+
+    plt.show()
