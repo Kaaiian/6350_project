@@ -17,11 +17,14 @@ def predictDataFrame(df, element_data):
     #    print(feature_matrix.get_df_features())
     #    print(feature_matrix.get_df_targets())
 
-    y_test_list_nest, predicted_test_list_nest = crossValidate(feature_matrix.get_df_features(),
-                                                               feature_matrix.get_df_targets())
-    plot_mlOutput(y_test_list_nest, predicted_test_list_nest)
+    predict_feature_vector(feature_matrix.get_df_features(), feature_matrix.get_df_targets())
 
     return feature_matrix
+
+def predict_feature_vector(features, targets):
+    y_test_list_nest, predicted_test_list_nest = crossValidate(features,targets)
+    plot_mlOutput(y_test_list_nest, predicted_test_list_nest)
+
 
 def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
     plt.figure(1, figsize=(8, 8))

@@ -60,6 +60,5 @@ if __name__ == "__main__":
         # Append this new property vector the end of df
         new_column = 'Predicted ' + property
         features[new_column] = newProperty
-    
-    df_updated = features
-    df_updated['target'] = targets
+
+    predict_feature_vector(features, targets)
