@@ -4,13 +4,16 @@ import numpy as np
 
 class Formula:
 
-    def __init__(self, formula, element_data):
+    def __init__(self, formula, target, element_data):
         self.feature_vector = None
         self.formula = formula
+        self.target = target
         self.get_features(formula, element_data)
 
     def get_feature_vector(self):
         return self.feature_vector
+    def get_target(self):
+        return self.target
 
     def get_features(self, formula, element_data):
         '''
