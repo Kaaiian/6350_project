@@ -46,3 +46,5 @@ class FeatureTargetMatrix:
         return self.df_features
     def get_feature(self):
         return self.features
+    def get_df_targets(self):
+        return self.df_targets

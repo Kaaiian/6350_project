@@ -1,8 +1,16 @@
 from Formula import *
 from FeatureTargetMatrix import *
 
-formula_target_list = [[['NaCl'], ['Ag'], ['LiAsI']], [[12],[5],[40]]]
-formula_target_column = pd.DataFrame(formula_list, columns=['formula', 'target'])
+
+# "add note about removing this." - taylor 
+formula_target_list = [['NaCl', 'Ag', 'LiAsI'], [12, 5, 40]]
+formula_target_column = pd.DataFrame(formula_target_list).transpose()
+formula_target_column.columns = ['formula', 'target']
+
+
+
+
+
 
 if __name__ == "__main__":
 
@@ -16,3 +24,4 @@ if __name__ == "__main__":
         feature_matrix.addFormula(new_formula.get_feature_vector(), new_formula.get_target())
     feature_matrix.createDataFrame()
     print(feature_matrix.get_df_features())
+    print(feature_matrix.get_df_targets())
