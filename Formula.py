@@ -38,7 +38,7 @@ class Formula:
                     avg_feature += element_data.loc[key].values * fractional_composition[key]
                     sum_feature += element_data.loc[key].values * element_composition[key]
                 except:
-                    print('The element:', key, 'is not currently supported in our database')
+                    print('The element:', key, 'from formula', formula, 'is not currently supported in our database')
                     self.feature_vector = np.array([np.nan] * len(element_data.iloc[0]) * 4)
             var_feature = element_data.loc[list(fractional_composition.keys())].var()
             range_feature = element_data.loc[list(fractional_composition.keys())].max() - element_data.loc[

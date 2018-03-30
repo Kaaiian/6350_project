@@ -133,3 +133,72 @@ def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
     plt.legend(['Density (MPDB)', 'Ideal Performance'], loc='best')
 
     plt.show()
+
+
+def get_MP_formula_property(property_of_interest='Band Gap'):
+
+    '''
+    Input 
+    ------------
+    Propertiy_of_interest: str,
+        Possible values:
+             'Band Gap',
+             'Bulk Modulus, Reuss',
+             'Bulk Modulus, Voigt',
+             'Bulk Modulus, Voigt-Reuss-Hill',
+             'CIF File',
+             'Compliance Tensor',
+             'Crystal System',
+             'Density',
+             'Elastic Anisotropy',
+             'Energy Above Convex Hull',
+             'Enthalpy of Formation',
+             'Full Formula',
+             'Number of Elements',
+             'Oxide Type',
+             'Piezoelectric Direction',
+             'Piezoelectric Modulus',
+             'Piezoelectric Tensor',
+             'Point Group',
+             "Poisson's Ratio",
+             'Shear Modulus, Reuss',
+             'Shear Modulus, Voigt',
+             'Shear Modulus, Voigt-Reuss-Hill',
+             'Space Group',
+             'Space Group Number',
+             'Stiffness Tensor',
+             'Total Magnetization',
+             'Unit Cell Volume',
+             'VASP Energy for Structure'
+    '''
+    
+    mp_df_dict ={}
+    N = 0
+    jsons = []
+
+    for i in range(1,11):
+        data_sheet = 'mp_all_pif-merged-' + str(i) + '.json'
+        jsons.append(data_sheet)
+
+    for data_sheet in jsons:
+        mp_raw_df = pd.read_json(data_sheet)
+        for formula, properties in zip(mp_raw_df['chemicalFormula'], mp_raw_df['properties']):
+            mp_df_dict[N] = {}
+            for item in properties:
+                if item['name'] in property_of_interest:
+                    if item['scalars'] > 0:
+                        mp_df_dict[N]['formula'] = formula
+                        mp_df_dict[N][item['name']] = float(item['scalars'])
+            N += 1
+
+    mp_df = pd.DataFrame(mp_df_dict).transpose()
+    mp_df.dropna(inplace=True)
+    
+    mp_df[property_of_interest] = mp_df[property_of_interest].astype(float)
+    # chose to drop duplicates or take the mean value of the duplicates
+    # get mean value for duplicates here
+    mp_df = mp_df.groupby('formula').mean().reset_index()
+    #
+    # drop duplicates  here
+    mp_df.drop_duplicates(subset=['formula'], keep=False, inplace=True)
+    return mp_df
