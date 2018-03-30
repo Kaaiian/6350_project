@@ -3,6 +3,8 @@ from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_squared_error
 from scipy.stats import spearmanr, pearsonr
+import pandas as pd
+import numpy as np
 
 def crossValidate(df_features, df_targets):
     kf = KFold(n_splits=2, random_state=15, shuffle=True)
