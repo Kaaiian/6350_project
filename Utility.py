@@ -9,14 +9,13 @@ import matplotlib.pyplot as plt
 
 
 def crossValidate(df_features, df_targets):
-    N = 2
+    N = 5
     kf = KFold(n_splits=N, random_state=15, shuffle=True)
     actual_data = []
     predicted_data = []
     y_test_list_nest = []
     predicted_test_list_nest = []
     max_value = 0
-    N = 0
     sum_test_rmse = 0
     sum_test_score = 0
     sum_spearman = 0
@@ -116,17 +115,19 @@ def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
             'size': 18}
     plt.rc('font', **font)
 
+    max_value = 0
     for y_test, predicted_test in zip(y_test_list_nest, predicted_test_list_nest):
         #    print(X_train, X_test, y_train, y_test)
         plt.plot(y_test, predicted_test, 'ro', markerfacecolor='none')
         plt.plot([0, 1000], [0, 1000], 'k-')
+        if max(y_test) > max_value:
+            max_value = max(y_test)
 
-    max_value = 40
     plt.xlabel('Actual Bulk Modulus (GPa)', fontsize=22)
     plt.ylabel('Predicted Bulk Modulus (GPa)', fontsize=22)
     plt.xlim((0, max_value))
     plt.ylim((0, max_value))
-    ticks = np.linspace(0, 20, 5)
+    ticks = np.linspace(0,max_value, 5)
     plt.xticks(ticks)
     plt.yticks(ticks)
     plt.legend(['Density (MPDB)', 'Ideal Performance'], loc='best')
