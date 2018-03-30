@@ -1,5 +1,6 @@
 from Formula import *
 from FeatureTargetMatrix import *
+from Utility import *
 
 
 # "add note about removing this." - taylor 
@@ -25,3 +26,5 @@ if __name__ == "__main__":
     feature_matrix.createDataFrame()
     print(feature_matrix.get_df_features())
     print(feature_matrix.get_df_targets())
+
+    y_test_list_nest, predicted_test_list_nest = crossValidate(feature_matrix.get_df_features(), feature_matrix.get_df_targets())
