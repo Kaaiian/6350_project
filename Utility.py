@@ -1,112 +1,27 @@
-from sklearn.preprocessing import StandardScaler, Normalizer
-from sklearn.model_selection import KFold
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.metrics import r2_score, mean_squared_error
-from scipy.stats import spearmanr, pearsonr
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+from Formula import *
+from FeatureTargetMatrix import *
+from MachineLearning import *
 
-def crossValidate(df_features, df_targets):
-    N = 5
-    kf = KFold(n_splits=N, random_state=15, shuffle=True)
-    actual_data = []
-    predicted_data = []
-    y_test_list_nest = []
-    predicted_test_list_nest = []
-    max_value = 0
-    sum_test_rmse = 0
-    sum_test_score = 0
-    sum_spearman = 0
-    sum_pearson = 0
+def predictDataFrame(df, element_data):
+    feature_matrix = FeatureTargetMatrix()
+    series_formula = df['formula']
+    series_target = df['target']
+    for formula, target in zip(series_formula, series_target):
+        new_formula = Formula(formula, target, element_data)
+        feature_matrix.addFormula(new_formula.get_feature_vector(), new_formula.get_target())
+    feature_matrix.createDataFrame()
+    #    print(feature_matrix.get_df_features())
+    #    print(feature_matrix.get_df_targets())
 
-    for train_index, test_index in kf.split(df_features):
-        X_train = df_features.reindex(train_index)
-        X_test = df_features.loc[test_index]
-        y_train = df_targets.loc[train_index]
-        y_test = df_targets.loc[test_index]
+    y_test_list_nest, predicted_test_list_nest = crossValidate(feature_matrix.get_df_features(),
+                                                               feature_matrix.get_df_targets())
+    plot_mlOutput(y_test_list_nest, predicted_test_list_nest)
 
-        # convert the y-pd.DataFrames into np.arrays. This is the accepted data format
-        # for fitting the rf algorithm
-        y_train = y_train.values.ravel()
-        y_test = y_test.values.ravel()
-
-        # The data is is scaled to have zero mean and unit variance. This is because
-        # many algorithms in the SKLEARN package behave poorly with 'wild' features
-        scaler = StandardScaler().fit(X_train)
-        X_train = pd.DataFrame(scaler.transform(X_train),
-                                      index=X_train.index.values,
-                                      columns=X_train.columns.values)
-        X_test = pd.DataFrame(scaler.transform(X_test),
-                                     index=X_test.index.values,
-                                     columns=X_test.columns.values)
-
-        normalizer = Normalizer().fit(X_train)
-        X_train = normalizer.transform(X_train)
-        normalizer = Normalizer().fit(X_test)
-        X_test = normalizer.transform(X_test)
-
-        # =============================================================================
-        # We do random forest machine learning here.
-        # =============================================================================
-
-        # The random forest regressor is called here. This uses the same parameters of
-        # the submitted publication for ML prediction of inorganic cp.
-
-        rf = RandomForestRegressor(n_estimators=200,
-                                   max_depth=20,
-                                   oob_score=True,
-                                   random_state=15,
-                                   n_jobs=-1)
-        rf.fit(X_train, y_train)
-
-        # rf is now contains the trained model. rf.predict is used to generate
-        # predictions. the code below uses those predictions and prints the errors.
-        # This error matches publication error.
-
-
-        predicted_train = rf.predict(X_train)
-        predicted_test = rf.predict(X_test)
-        test_rmse = np.sqrt(mean_squared_error(y_test, predicted_test))
-        test_score = r2_score(y_test, predicted_test)
-        spearman = spearmanr(y_test, predicted_test)
-        pearson = pearsonr(y_test, predicted_test)
-
-        sum_test_rmse += test_rmse
-        sum_test_score += test_score
-        sum_spearman += spearman[0]
-        sum_pearson += pearson[0]
-
-        print(f'Mean-squared-error for the test data is: {test_rmse:.3}')
-        print(f'Out-of-bag R-2 score estimate: {rf.oob_score_:>5.3}')
-        print(f'Test data R-2 score: {test_score:>6.7}')
-        print(f'Test data Spearman correlation: {spearman[0]:.3}')
-        print(f'Test data Pearson correlation: {pearson[0]:.3}')
-
-        # We quickly plot the actual vs predicted values. This allows us to check if
-        # the model has behaved as we expected it to. Upon inspection, we can now
-        # pickle the model confident that we are predicting the correct values.
-
-        y_test_list_nest.append(y_test)
-        predicted_test_list_nest.append(predicted_test)
-        if y_test.max() > max_value:
-            max_value = max([y_test.max(), predicted_test.max()])
-        actual_data += list(y_test)
-        predicted_data += list(predicted_test)
-
-
-    print("-----------------------------")
-    avg_test_rmse = sum_test_rmse / N
-    avg_test_score = sum_test_score / N
-    avg_spearman = sum_spearman / N
-    avg_pearson = sum_pearson / N
-
-    print(f'Mean-squared-error for the test data is: {avg_test_rmse:.3}')
-    print(f'Test data R-2 score: {avg_test_score:>6.7}')
-    print(f'Test data Spearman correlation: {avg_spearman:.3}')
-    print(f'Test data Pearson correlation: {avg_pearson:.3}')
-    return(y_test_list_nest, predicted_test_list_nest)
+    return feature_matrix
 
 def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
     plt.figure(1, figsize=(8, 8))
@@ -134,13 +49,12 @@ def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
 
     plt.show()
 
-
 def get_MP_formula_property(property_of_interest='Band Gap'):
 
     '''
     Input 
     ------------
-    Propertiy_of_interest: str,
+    Property_of_interest: str,
         Possible values:
              'Band Gap',
              'Bulk Modulus, Reuss',
@@ -202,3 +116,4 @@ def get_MP_formula_property(property_of_interest='Band Gap'):
     # drop duplicates  here
     mp_df.drop_duplicates(subset=['formula'], keep=False, inplace=True)
     return mp_df
+

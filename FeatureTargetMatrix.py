@@ -19,6 +19,7 @@ class FeatureTargetMatrix:
         self.df_targets = pd.DataFrame(self.targets)
         self.cleanFeatureMatrix()
 
+    # This function removes all of the empty rows.
     def cleanFeatureMatrix(self):
         # drop elements that aren't included in the elmenetal properties list. These
         # will be returned as feature rows completely full of Nan values.
@@ -40,6 +41,9 @@ class FeatureTargetMatrix:
         cols = self.df_features.columns.values
         mean_values = self.df_features[cols].mean()
         self.df_features[cols] = self.df_features[cols].fillna(mean_values.iloc[0])
+
+    #
+
 
     # Getter functions
     def get_df_features(self):
