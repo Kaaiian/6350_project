@@ -38,7 +38,7 @@ class Formula:
                     avg_feature += element_data.loc[key].values * fractional_composition[key]
                     sum_feature += element_data.loc[key].values * element_composition[key]
                 except:
-                    print('The element:', key, 'from formula', formula, 'is not currently supported in our database')
+#                    print('The element:', key, 'from formula', formula, 'is not currently supported in our database')
                     self.feature_vector = np.array([np.nan] * len(element_data.iloc[0]) * 4)
             var_feature = element_data.loc[list(fractional_composition.keys())].var()
             range_feature = element_data.loc[list(fractional_composition.keys())].max() - element_data.loc[
@@ -49,6 +49,5 @@ class Formula:
             features = np.concatenate([avg_feature, sum_feature, np.array(var_feature), np.array(range_feature)])
             self.feature_vector = features.transpose()
         except:
-            print(
-            'There was and error with the Formula: ' + formula + ', this is a general exception with an unkown error')
+#            print('There was and error with the Formula: ' + formula + ', this is a general exception with an unkown error')
             self.feature_vector = [np.nan] * len(element_data.iloc[0]) * 4

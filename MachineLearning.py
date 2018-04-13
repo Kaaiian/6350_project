@@ -8,19 +8,21 @@ from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
 import numpy as np
 
-def crossValidate(df_features, df_targets):
+def crossValidate(df_features, df_targets, calc_property):
     N = 5
     kf = KFold(n_splits=N, random_state=15, shuffle=True)
     actual_data = []
     predicted_data = []
     y_test_list_nest = []
     predicted_test_list_nest = []
+    sum_percent = 0
     max_value = 0
     sum_test_rmse = 0
     sum_test_score = 0
     sum_spearman = 0
     sum_pearson = 0
-
+    metrics_string = ''
+    
     for train_index, test_index in kf.split(df_features):
         X_train = df_features.reindex(train_index)
         X_test = df_features.loc[test_index]
@@ -72,17 +74,26 @@ def crossValidate(df_features, df_targets):
         test_score = r2_score(y_test, predicted_test)
         spearman = spearmanr(y_test, predicted_test)
         pearson = pearsonr(y_test, predicted_test)
-
+        avg_percent_error = np.mean(np.abs(np.array(y_test)-np.array(predicted_test))/np.array(y_test)*100)
+    
         sum_test_rmse += test_rmse
         sum_test_score += test_score
+        sum_percent += avg_percent_error
         sum_spearman += spearman[0]
         sum_pearson += pearson[0]
 
-        print(f'Mean-squared-error for the test data is: {test_rmse:.3}')
-        print(f'Out-of-bag R-2 score estimate: {rf.oob_score_:>5.3}')
-        print(f'Test data R-2 score: {test_score:>6.7}')
-        print(f'Test data Spearman correlation: {spearman[0]:.3}')
-        print(f'Test data Pearson correlation: {pearson[0]:.3}')
+        metrics_string += ('___________________________________________\n'
+                         'Mean-squared-error for the test data is: ' + str(test_rmse) + '\n'
+                        'Test data R-2 score: ' + str(test_score) + '\n'
+                        'Average percent error: ' + str(avg_percent_error) + '\n'
+                        '___________________________________________\n')
+
+        print('validation finished')
+#        print(f'Root-mean-squared-error for the test data is: {test_rmse:.3}')
+#        print(f'Out-of-bag R-2 score estimate: {rf.oob_score_:>5.3}')
+#        print(f'Test data R-2 score: {test_score:>6.7}')
+#        print(f'Test data Spearman correlation: {spearman[0]:.3}')
+#        print(f'Test data Pearson correlation: {pearson[0]:.3}')
 
         # We quickly plot the actual vs predicted values. This allows us to check if
         # the model has behaved as we expected it to. Upon inspection, we can now
@@ -101,12 +112,20 @@ def crossValidate(df_features, df_targets):
     avg_test_score = sum_test_score / N
     avg_spearman = sum_spearman / N
     avg_pearson = sum_pearson / N
-
-    print(f'Mean-squared-error for the test data is: {avg_test_rmse:.3}')
-    print(f'Test data R-2 score: {avg_test_score:>6.7}')
-    print(f'Test data Spearman correlation: {avg_spearman:.3}')
-    print(f'Test data Pearson correlation: {avg_pearson:.3}')
-    return(y_test_list_nest, predicted_test_list_nest)
+    avg_percent = sum_percent / N
+    
+    metrics_string += ("--------------combined metrics---------------\n"
+                       'Root-mean-squared-error for the test data is: ' + str(avg_test_rmse)  +'\n'
+                       'Test data R-2 score: ' + str(avg_test_score) +'\n'
+                       'Average percent error: ' + str(avg_percent) +'\n'
+                       )
+    print(metrics_string)
+#    print(f'Mean-squared-error for the test data is: {avg_test_rmse:.3}')
+#    print(f'Test data R-2 score: {avg_test_score:>6.7}')
+#    print(f'Test data Spearman correlation: {avg_spearman:.3}')
+#    print(f'Test data Pearson correlation: {avg_pearson:.3}')
+    
+    return (y_test_list_nest, predicted_test_list_nest, metrics_string)
 
 def createModel(df_features, df_targets):
     rf_ML_features = df_features

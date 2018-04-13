@@ -21,10 +21,16 @@ propery_list = [
 
 if __name__ == "__main__":
 
+    print('\n\ncalculating base performance\n -------------------------------')
     # This gathers the input data and makes sure that it is suitable for machine learning
-    feature_matrix_df = predictDataFrame(df, element_data)
+    feature_matrix_df, metrics_string = predictDataFrame(df, element_data)
     features = copy.deepcopy(feature_matrix_df.get_df_features())
     targets = copy.deepcopy(feature_matrix_df.get_df_targets())
+    metrics_string = 'Hello'
+
+    f = open('metrics/' + 'metrics_'+ 'original_band_gap' + '.txt', 'a')
+    f.write(metrics_string)
+    f.close()
 
     def multifeature(features, targets):
         for calc_property in propery_list:
@@ -32,9 +38,9 @@ if __name__ == "__main__":
             # Get the dataframe of calculated values corresponding to the specified target
             df_calc_prop = get_MP_formula_property(property_of_interest=calc_property)
             
-            print('\n \n \nTesting machine learning for calculated', calc_property, '.....\n.....\n.....')
+            print('\n \n \nTesting machine learning for calculated', calc_property, '\n -------------------------------')
             # Calculate the feature matrix based on the the calculated properties
-            feature_matrix_df_calc_prop = predictDataFrame(df_calc_prop, element_data)
+            feature_matrix_df_calc_prop, metrics_string = predictDataFrame(df_calc_prop, element_data, calc_property)
             
             calc_features = feature_matrix_df_calc_prop.get_df_features()
 
@@ -47,6 +53,10 @@ if __name__ == "__main__":
             # Append this new property vector to the end of df
             new_column = 'Predicted ' + calc_property
             features[new_column] = newProperty
+            
+            f = open('metrics/'+'metrics_'+ calc_property + '.txt', 'a')
+            f.write(metrics_string)
+            f.close()
         return features, targets
 
     def iterative(features, targets):
@@ -56,9 +66,9 @@ if __name__ == "__main__":
             # Get the dataframe of calculated values corresponding to the specified target
             df_calc_prop = get_MP_formula_property(property_of_interest=calc_property)
             
-            print('\n \n \nTesting machine learning for calculated', calc_property, '.....\n.....\n.....')
+            print('\n \n \nTesting machine learning for calculated', calc_property, '\n -------------------------------')
             # Calculate the feature matrix based on the the calculated properties
-            feature_matrix_df_calc_prop = predictDataFrame(df_calc_prop, element_data)
+            feature_matrix_df_calc_prop, metrics_string = predictDataFrame(df_calc_prop, element_data, calc_property)
             
             calc_features = feature_matrix_df_calc_prop.get_df_features()
             
@@ -80,10 +90,18 @@ if __name__ == "__main__":
             # Append this new property vector to the end of df
             new_column = 'Predicted ' + calc_property
             features[new_column] = newProperty
+            
+            f = open('metrics/'+'metrics_'+ calc_property + '.txt', 'a')
+            f.write(metrics_string)
+            f.close()
         return features, targets
 
     multi_features, multi_targets = multifeature(features, targets)
-    iter_features, iter_targets = iterative(features, targets)
+#    iter_features, iter_targets = iterative(features, targets)
 
-    print('\nfinal performance with multi-feature nested features')
-    predict_feature_vector(multi_features, multi_targets)
+    print('\nfinal performance with multi-feature nested features\n -------------------------------')
+    metrics_string = predict_feature_vector(multi_features, multi_targets)
+
+    f = open('metrics/'+'metrics_multi_feature_band_gap.txt', 'a')
+    f.write(metrics_string)
+    f.close()

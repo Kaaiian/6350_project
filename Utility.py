@@ -1,12 +1,13 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 from Formula import *
 from FeatureTargetMatrix import *
 from MachineLearning import *
 
-def predictDataFrame(df, element_data):
+def predictDataFrame(df, element_data, calc_property='experimental_band_gap'):
     feature_matrix = FeatureTargetMatrix()
     series_formula = df['formula']
     series_target = df['target']
@@ -17,17 +18,18 @@ def predictDataFrame(df, element_data):
     #    print(feature_matrix.get_df_features())
     #    print(feature_matrix.get_df_targets())
 
-    predict_feature_vector(feature_matrix.get_df_features(), feature_matrix.get_df_targets())
+    metrics_string = predict_feature_vector(feature_matrix.get_df_features(), feature_matrix.get_df_targets(), calc_property)
 
-    return feature_matrix
+    return feature_matrix, metrics_string
 
-def predict_feature_vector(features, targets):
-    y_test_list_nest, predicted_test_list_nest = crossValidate(features,targets)
-    plot_mlOutput(y_test_list_nest, predicted_test_list_nest)
+def predict_feature_vector(features, targets, calc_property='experimental_band_gap'):
+    y_test_list_nest, predicted_test_list_nest, metrics_string = crossValidate(features, targets, calc_property)
+    plot_mlOutput(y_test_list_nest, predicted_test_list_nest, calc_property)
+    return metrics_string
 
 
-def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
-    plt.figure(1, figsize=(8, 8))
+def plot_mlOutput(y_test_list_nest, predicted_test_list_nest, calc_property):
+    plt.figure(figsize=(8, 8))
     font = {'family': 'DejaVu Sans',
             'weight': 'normal',
             'size': 18}
@@ -37,20 +39,24 @@ def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
     for y_test, predicted_test in zip(y_test_list_nest, predicted_test_list_nest):
         #    print(X_train, X_test, y_train, y_test)
         plt.plot(y_test, predicted_test, 'ro', markerfacecolor='none')
-        plt.plot([0, 1000], [0, 1000], 'k-')
+        plt.plot([0, 5000], [0, 5000], 'k-')
         if max(y_test) > max_value:
             max_value = max(y_test)
 
-    plt.xlabel('Actual', fontsize=22)
-    plt.ylabel('Predicted', fontsize=22)
+    plt.xlabel('Actual '+calc_property, fontsize=22)
+    plt.ylabel('Predicted '+calc_property, fontsize=22)
     plt.xlim((0, max_value))
     plt.ylim((0, max_value))
     ticks = np.linspace(0,max_value, 5)
     plt.xticks(ticks)
     plt.yticks(ticks)
     plt.legend(['ML-performance', 'Ideal Performance'], loc='best')
-
-    plt.show()
+    
+    pathname = os.getcwd()
+    filename = calc_property + '_pred_vs_act'
+    extension = '.png'
+    plt.savefig(pathname + '/figures/' + filename + extension)
+#    plt.show()
 
 def get_MP_formula_property(property_of_interest='Band Gap'):
 
@@ -119,7 +125,7 @@ def get_MP_formula_property(property_of_interest='Band Gap'):
     # drop duplicates  here
     mp_df.drop_duplicates(subset=['formula'], keep=False, inplace=True)
     
-    cutoff = 32000
+    cutoff = 10
     if len(mp_df) > cutoff:
         mp_df = mp_df.sample(n=cutoff)
     return mp_df
