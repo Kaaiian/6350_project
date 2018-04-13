@@ -41,14 +41,14 @@ def plot_mlOutput(y_test_list_nest, predicted_test_list_nest):
         if max(y_test) > max_value:
             max_value = max(y_test)
 
-    plt.xlabel('Actual Bulk Modulus (GPa)', fontsize=22)
-    plt.ylabel('Predicted Bulk Modulus (GPa)', fontsize=22)
+    plt.xlabel('Actual', fontsize=22)
+    plt.ylabel('Predicted', fontsize=22)
     plt.xlim((0, max_value))
     plt.ylim((0, max_value))
     ticks = np.linspace(0,max_value, 5)
     plt.xticks(ticks)
     plt.yticks(ticks)
-    plt.legend(['Density (MPDB)', 'Ideal Performance'], loc='best')
+    plt.legend(['ML-performance', 'Ideal Performance'], loc='best')
 
     plt.show()
 

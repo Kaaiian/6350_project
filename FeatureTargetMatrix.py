@@ -15,7 +15,10 @@ class FeatureTargetMatrix:
 
     # Called after all of the feature vectors have been collected
     def createDataFrame(self):
-        self.df_features = pd.DataFrame(self.features)
+        try:
+            self.df_features = pd.DataFrame(self.features)
+        except:
+            print(self.features)
         self.df_targets = pd.DataFrame(self.targets)
         self.cleanFeatureMatrix()
 

@@ -75,7 +75,7 @@ band_gap = 'Band Gap'
 density = 'Density'
 #properties_of_interest = [B_reuss, B_voight]
 #properties_of_interest = [B_voight_ruess_hill]
-properties_of_interest = [density]
+properties_of_interest = [band_gap]
 
 mp_df_dict ={}
 N = 0
@@ -116,7 +116,7 @@ series_formula = mp_df['formula']
 # choices: B_reuss, B_voight, B_voight_ruess_hill
 #series_target = mp_df[B_voight_ruess_hill]
 #series_target = mp_df[band_gap]
-series_target = mp_df[density]
+series_target = mp_df[band_gap]
 
 from scipy.stats import norm
 from scipy import stats
@@ -387,8 +387,8 @@ mean_values = df_features[cols].mean()
 df_features[cols]=df_features[cols].fillna(mean_values.iloc[0])
 ML_feature = rf_ML.predict(df_features)
 
-df_features['Calculated Density'] = ML_feature
-df_features.drop(['Calculated Density'], axis=1, inplace=True)
+df_features['Calculated Eg'] = ML_feature
+#df_features.drop(['Calculated Eg'], axis=1, inplace=True)
 
 #plt.figure(1, figsize=(10,10))
 #plt.plot(B_feature, material_data['B'], 'ro')
