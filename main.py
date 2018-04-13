@@ -21,12 +21,11 @@ propery_list = [
 
 if __name__ == "__main__":
 
-    print('\n\ncalculating base performance\n -------------------------------')
+    print('\n\ncalculating base performance\n-------------------------------')
     # This gathers the input data and makes sure that it is suitable for machine learning
     feature_matrix_df, metrics_string = predictDataFrame(df, element_data)
     features = copy.deepcopy(feature_matrix_df.get_df_features())
     targets = copy.deepcopy(feature_matrix_df.get_df_targets())
-    metrics_string = 'Hello'
 
     f = open('metrics/' + 'metrics_'+ 'original_band_gap' + '.txt', 'a')
     f.write(metrics_string)
@@ -38,7 +37,7 @@ if __name__ == "__main__":
             # Get the dataframe of calculated values corresponding to the specified target
             df_calc_prop = get_MP_formula_property(property_of_interest=calc_property)
             
-            print('\n \n \nTesting machine learning for calculated', calc_property, '\n -------------------------------')
+            print('\n \n \nTesting machine learning for calculated', calc_property, '\n-------------------------------')
             # Calculate the feature matrix based on the the calculated properties
             feature_matrix_df_calc_prop, metrics_string = predictDataFrame(df_calc_prop, element_data, calc_property)
             
@@ -66,7 +65,7 @@ if __name__ == "__main__":
             # Get the dataframe of calculated values corresponding to the specified target
             df_calc_prop = get_MP_formula_property(property_of_interest=calc_property)
             
-            print('\n \n \nTesting machine learning for calculated', calc_property, '\n -------------------------------')
+            print('\n \n \nTesting machine learning for calculated', calc_property, '\n-------------------------------')
             # Calculate the feature matrix based on the the calculated properties
             feature_matrix_df_calc_prop, metrics_string = predictDataFrame(df_calc_prop, element_data, calc_property)
             
@@ -99,8 +98,8 @@ if __name__ == "__main__":
     multi_features, multi_targets = multifeature(features, targets)
 #    iter_features, iter_targets = iterative(features, targets)
 
-    print('\nfinal performance with multi-feature nested features\n -------------------------------')
-    metrics_string = predict_feature_vector(multi_features, multi_targets)
+    print('\nfinal performance with multi-feature nested features\n-------------------------------')
+    metrics_string = predict_feature_vector(multi_features, multi_targets, calc_property="multi-feature_band_gap")
 
     f = open('metrics/'+'metrics_multi_feature_band_gap.txt', 'a')
     f.write(metrics_string)

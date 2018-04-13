@@ -29,7 +29,7 @@ def predict_feature_vector(features, targets, calc_property='experimental_band_g
 
 
 def plot_mlOutput(y_test_list_nest, predicted_test_list_nest, calc_property):
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=(12, 12))
     font = {'family': 'DejaVu Sans',
             'weight': 'normal',
             'size': 18}
@@ -125,7 +125,7 @@ def get_MP_formula_property(property_of_interest='Band Gap'):
     # drop duplicates  here
     mp_df.drop_duplicates(subset=['formula'], keep=False, inplace=True)
     
-    cutoff = 10
+    cutoff = 32000
     if len(mp_df) > cutoff:
         mp_df = mp_df.sample(n=cutoff)
     return mp_df
