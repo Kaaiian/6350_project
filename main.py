@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     def multifeature(features, targets):
         for calc_property in propery_list[:]:
-    
+
             # Get the dataframe of calculated values corresponding to the specified target
             df_calc_prop = get_MP_formula_property(property_of_interest=calc_property)
             
@@ -37,13 +37,13 @@ if __name__ == "__main__":
             feature_matrix_df_calc_prop = predictDataFrame(df_calc_prop, element_data)
             
             calc_features = feature_matrix_df_calc_prop.get_df_features()
-    
+
             # Create the machine learning model using the feature matrix obtained from the calculated properties
             ml_model = createModel(calc_features, feature_matrix_df_calc_prop.get_df_targets())
-    
+
             # Use the model to predict new properties based on the original dataframe (df)
             newProperty = ml_model.predict(feature_matrix_df.get_df_features())
-    
+
             # Append this new property vector to the end of df
             new_column = 'Predicted ' + calc_property
             features[new_column] = newProperty
@@ -51,8 +51,8 @@ if __name__ == "__main__":
 
     def iterative(features, targets):
         models = []
-        for calc_property in propery_list[0:1]:
-    
+        for calc_property in propery_list:
+
             # Get the dataframe of calculated values corresponding to the specified target
             df_calc_prop = get_MP_formula_property(property_of_interest=calc_property)
             
@@ -68,7 +68,7 @@ if __name__ == "__main__":
                 # Append this new property vector to the end of df
                 new_column = 'Predicted ' + calc_property
                 calc_features[new_column] = newProperty
-    
+
             # Create the machine learning model using the feature matrix obtained from the calculated properties
             ml_model = createModel(calc_features, feature_matrix_df_calc_prop.get_df_targets())
             
@@ -76,13 +76,14 @@ if __name__ == "__main__":
             
             # Use the model to predict new properties based on the original dataframe (df)
             newProperty = ml_model.predict(feature_matrix_df.get_df_features())
-    
+
             # Append this new property vector to the end of df
             new_column = 'Predicted ' + calc_property
             features[new_column] = newProperty
         return features, targets
-        
-    multi_features, multi_targets = multifeature(features, targets)
+
+#    multi_features, multi_targets = multifeature(features, targets)
     iter_features, iter_targets = iterative(features, targets)
+
     print('\nfinal performance with multi-feature nested features')
-    predict_feature_vector(multifeatures, multitargets)
+    predict_feature_vector(multi_features, multi_targets)
