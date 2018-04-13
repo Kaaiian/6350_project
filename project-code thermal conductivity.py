@@ -75,7 +75,7 @@ band_gap = 'Band Gap'
 density = 'Density'
 #properties_of_interest = [B_reuss, B_voight]
 #properties_of_interest = [B_voight_ruess_hill]
-properties_of_interest = [band_gap]
+properties_of_interest = [density]
 
 mp_df_dict ={}
 N = 0
