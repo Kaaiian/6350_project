@@ -27,7 +27,7 @@ if __name__ == "__main__":
     targets = copy.deepcopy(feature_matrix_df.get_df_targets())
 
     def multifeature(features, targets):
-        for calc_property in propery_list[:]:
+        for calc_property in propery_list:
 
             # Get the dataframe of calculated values corresponding to the specified target
             df_calc_prop = get_MP_formula_property(property_of_interest=calc_property)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
             features[new_column] = newProperty
         return features, targets
 
-#    multi_features, multi_targets = multifeature(features, targets)
+    multi_features, multi_targets = multifeature(features, targets)
     iter_features, iter_targets = iterative(features, targets)
 
     print('\nfinal performance with multi-feature nested features')

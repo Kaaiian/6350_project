@@ -119,8 +119,8 @@ def get_MP_formula_property(property_of_interest='Band Gap'):
     # drop duplicates  here
     mp_df.drop_duplicates(subset=['formula'], keep=False, inplace=True)
     
-    mp_df = mp_df[mp_df['target'] != 0]
-    if len(mp_df) > 100:
-        mp_df = mp_df.sample(n=100)
+    cutoff = 32000
+    if len(mp_df) > cutoff:
+        mp_df = mp_df.sample(n=cutoff)
     return mp_df
 
