@@ -7,10 +7,10 @@ df.columns = ['formula', 'target']
 element_data = pd.read_csv(r'simple_element_properties.csv', index_col=0)
 
 propery_list = [
-    'Band Gap',
-    'Bulk Modulus, Voigt-Reuss-Hill',
-    'Density',
-    'Elastic Anisotropy',
+    #'Band Gap',
+    #'Bulk Modulus, Voigt-Reuss-Hill',
+    #'Density',
+    #'Elastic Anisotropy',
     'Energy Above Convex Hull',
     'Enthalpy of Formation',
     'Piezoelectric Modulus',
