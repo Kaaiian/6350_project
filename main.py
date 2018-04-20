@@ -80,7 +80,8 @@ if __name__ == "__main__":
             
             calc_features = feature_matrix_df_calc_prop.get_df_features()
             
-            # create a for loop that handles iterative adding of features
+            # create a for loop
+            # that handles iterative adding of features
             for model in models:
                 newProperty = model.predict(calc_features)
                 # Append this new property vector to the end of df
@@ -89,11 +90,15 @@ if __name__ == "__main__":
 
             # Create the machine learning model using the feature matrix obtained from the calculated properties
             ml_model = createModel(calc_features, feature_matrix_df_calc_prop.get_df_targets())
-            
+
+            pickle.dump(ml_model, open("pickles/iters_" + calc_property + "_Model.sav", 'wb'))
+
             models.append(ml_model)
             
             # Use the model to predict new properties based on the original dataframe (df)
             newProperty = ml_model.predict(feature_matrix_df.get_df_features())
+
+            pickle.dump(newProperty, open("pickles/iters_" + calc_property + "_newProperty.sav", 'wb'))
 
             # Append this new property vector to the end of df
             new_column = 'Predicted ' + calc_property
@@ -102,13 +107,15 @@ if __name__ == "__main__":
             f = open('metrics/'+'metrics_'+ calc_property + '.txt', 'a')
             f.write(metrics_string)
             f.close()
+        pickle.dump(features, open("pickles/iters_" + calc_property + "_finalFeatures.sav", 'wb'))
         return features, targets
 
-    multi_features, multi_targets = multifeature(features, targets)
-#    iter_features, iter_targets = iterative(features, targets)
+    #multi_features, multi_targets = multifeature(features, targets)
+    iter_features, iter_targets = iterative(features, targets)
 
     print('\nfinal performance with multi-feature nested features\n-------------------------------')
-    metrics_string = predict_feature_vector(multi_features, multi_targets, calc_property="multi-feature_band_gap")
+    #metrics_string = predict_feature_vector(multi_features, multi_targets, calc_property="multi-feature_band_gap")
+    metrics_string = predict_feature_vector(iter_features, iter_targets, calc_property="multi-feature_band_gap")
 
     f = open('metrics/'+'metrics_multi_feature_band_gap.txt', 'a')
     f.write(metrics_string)
