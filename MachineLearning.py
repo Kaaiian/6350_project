@@ -69,11 +69,20 @@ def crossValidate(df_features, df_targets, calc_property):
         # The random forest regressor is called here. This uses the same parameters of
         # the submitted publication for ML prediction of inorganic cp.
 
+        '''
         rf = RandomForestRegressor(n_estimators=200,
                                    max_depth=20,
                                    oob_score=True,
                                    random_state=15,
                                    n_jobs=-1)
+        '''
+
+        rf = RandomForestRegressor(n_estimators=200,
+                                   max_depth=10,
+                                   oob_score=True,
+                                   random_state=15,
+                                   n_jobs=-1,
+                                   max_features='auto')
         rf.fit(X_train, y_train)
 
         # rf is now contains the trained model. rf.predict is used to generate
@@ -147,5 +156,6 @@ def createModel(df_features, df_targets):
                                   max_depth=20,
                                   oob_score=True,
                                   random_state=15,
-                                  n_jobs=-1)
+                                  n_jobs=-1,
+                                  max_features = 'sqrt')
     return rf_ML.fit(rf_ML_features, rf_ML_targets)

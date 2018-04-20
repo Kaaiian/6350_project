@@ -8,10 +8,10 @@ df.columns = ['formula', 'target']
 element_data = pd.read_csv(r'simple_element_properties.csv', index_col=0)
 
 propery_list = [
-    # 'Band Gap',
-    # 'Bulk Modulus, Voigt-Reuss-Hill',
-    # 'Density',
-    # 'Elastic Anisotropy', this was removed because the dataset for this attibute performed poorly with Machine Learning
+    'Band Gap',
+    'Bulk Modulus, Voigt-Reuss-Hill',
+    'Density',
+    #'Elastic Anisotropy', this was removed because the dataset for this attibute performed poorly with Machine Learning
     'Energy Above Convex Hull',
     'Enthalpy of Formation',
     'Piezoelectric Modulus',
@@ -42,10 +42,7 @@ if __name__ == "__main__":
 
             # Create the machine learning model using the feature matrix obtained from the calculated properties
             filename = "pickles/" + calc_property + "_newProperty.sav"
-            ml_model = pickle.load(open(filename, 'rb'))
-
-            # Use the model to predict new properties based on the original dataframe (df)
-            newProperty = ml_model.predict(feature_matrix_df.get_df_features())
+            newProperty = pickle.load(open(filename, 'rb'))
 
             # Append this new property vector to the end of df
             new_column = 'Predicted ' + calc_property
@@ -90,9 +87,9 @@ if __name__ == "__main__":
             new_column = 'Predicted ' + calc_property
             features[new_column] = newProperty
 
-            f = open('metrics/' + 'metrics_' + calc_property + '.txt', 'a')
-            f.write(metrics_string)
-            f.close()
+            #f = open('metrics/' + 'metrics_' + calc_property + '.txt', 'a')
+            #f.write(metrics_string)
+            #f.close()
         return features, targets
 
 
