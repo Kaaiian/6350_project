@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 class FeatureTargetMatrix:
 
@@ -15,10 +16,10 @@ class FeatureTargetMatrix:
 
     # Called after all of the feature vectors have been collected
     def createDataFrame(self):
-        try:
-            self.df_features = pd.DataFrame(self.features)
-        except:
-            print(self.features)
+        #try:
+        self.df_features = pd.DataFrame(np.array(self.features))
+        #except:
+        #    print(self.features)
         self.df_targets = pd.DataFrame(self.targets)
         self.cleanFeatureMatrix()
 

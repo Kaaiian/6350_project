@@ -8,6 +8,15 @@ from sklearn.ensemble import RandomForestRegressor
 import pandas as pd
 import numpy as np
 
+log_list = [
+    #'Elastic Anisotropy',
+    'Energy Above Convex Hull',
+    'Enthalpy of Formation',
+    'Piezoelectric Modulus',
+    'Poisson\'s Ratio',
+    'Unit Cell Volume'
+]
+
 def crossValidate(df_features, df_targets, calc_property):
     N = 5
     kf = KFold(n_splits=N, random_state=15, shuffle=True)
@@ -22,7 +31,11 @@ def crossValidate(df_features, df_targets, calc_property):
     sum_spearman = 0
     sum_pearson = 0
     metrics_string = ''
-    
+
+    if calc_property in log_list:
+        df_targets = np.log(df_targets)
+
+
     for train_index, test_index in kf.split(df_features):
         X_train = df_features.reindex(train_index)
         X_test = df_features.loc[test_index]
@@ -74,7 +87,7 @@ def crossValidate(df_features, df_targets, calc_property):
         test_score = r2_score(y_test, predicted_test)
         spearman = spearmanr(y_test, predicted_test)
         pearson = pearsonr(y_test, predicted_test)
-        avg_percent_error = np.mean(np.abs(np.array(y_test)-np.array(predicted_test))/np.array(y_test)*100)
+        avg_percent_error = np.mean(np.abs(np.array(y_test)-np.array(predicted_test))/(abs(np.array(y_test))+.00000000000001)*100)
     
         sum_test_rmse += test_rmse
         sum_test_score += test_score
