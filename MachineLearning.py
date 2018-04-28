@@ -78,7 +78,7 @@ def crossValidate(df_features, df_targets, calc_property):
         '''
 
         rf = RandomForestRegressor(n_estimators=200,
-                                   max_depth=10,
+                                   max_depth=None,
                                    oob_score=True,
                                    random_state=15,
                                    n_jobs=-1,

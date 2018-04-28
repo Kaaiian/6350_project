@@ -22,6 +22,19 @@ def predictDataFrame(df, element_data, calc_property='experimental_band_gap'):
 
     return feature_matrix, metrics_string
 
+def predictDataFrame_nocross(df, element_data):
+    feature_matrix = FeatureTargetMatrix()
+    series_formula = df['formula']
+    series_target = df['target']
+    for formula, target in zip(series_formula, series_target):
+        new_formula = Formula(formula, target, element_data)
+        feature_matrix.addFormula(new_formula.get_feature_vector(), new_formula.get_target())
+    feature_matrix.createDataFrame()
+    #    print(feature_matrix.get_df_features())
+    #    print(feature_matrix.get_df_targets())
+
+    return feature_matrix
+
 def predict_feature_vector(features, targets, calc_property='experimental_band_gap'):
     y_test_list_nest, predicted_test_list_nest, metrics_string = crossValidate(features, targets, calc_property)
     plot_mlOutput(y_test_list_nest, predicted_test_list_nest, calc_property)
